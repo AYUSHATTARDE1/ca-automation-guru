@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -88,7 +89,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
       const { error } = await supabase.from("invoices").insert({
         client_name: values.client_name,
         invoice_number: values.invoice_number,
-        amount: values.amount,
+        amount: values.amount, // This is now a number after zod transformation
         status: values.status,
         due_date: values.due_date,
         user_id: user_id

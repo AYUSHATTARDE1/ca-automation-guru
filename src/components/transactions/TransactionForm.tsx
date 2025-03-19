@@ -96,7 +96,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess }) => {
       }
 
       const { error } = await supabase.from("transactions").insert({
-        amount: values.amount,
+        amount: values.amount, // This is now a number after zod transformation
         description: values.description,
         category: values.category,
         transaction_date: values.transaction_date,
