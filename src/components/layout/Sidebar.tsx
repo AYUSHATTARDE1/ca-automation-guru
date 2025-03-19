@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
@@ -12,7 +12,11 @@ import {
   Settings,
   HelpCircle,
   ChevronRight,
+  LogOut,
 } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -56,6 +60,7 @@ const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, to, isActive }) =>
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
 
   const navItems = [
@@ -66,6 +71,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     { icon: BarChart3, label: "Analytics", to: "/analytics" },
     { icon: TrendingUp, label: "Business", to: "/business" },
   ];
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        toast.error("Error signing out");
+        return;
+      }
+      toast.success("Signed out successfully");
+      navigate("/auth");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Error signing out");
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -114,6 +134,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                 to="/settings"
                 isActive={currentPath === "/settings"}
               />
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start px-4 py-3 my-1 text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={handleLogout}
+              >
+                <LogOut size={20} className="mr-3" />
+                <span className="font-medium">Log Out</span>
+              </Button>
             </div>
           </div>
         </motion.aside>
