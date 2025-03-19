@@ -13,7 +13,7 @@ import {
   DialogTrigger 
 } from "@/components/ui/dialog";
 
-import { TransactionFormSchema, TransactionFormValues } from "./TransactionFormSchema";
+import { transactionSchema, TransactionFormValues } from "./TransactionFormSchema";
 import { TransactionFormContent } from "./TransactionFormContent";
 
 interface TransactionFormProps {
