@@ -77,8 +77,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
   const onSubmit = async (values: InvoiceFormValues) => {
     setIsLoading(true);
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const user_id = sessionData?.session?.user?.id;
+      const { data: { user } } = await supabase.auth.getUser();
+const user_id = user?.id;
+
       
       if (!user_id) {
         toast.error("You must be logged in to create an invoice");
