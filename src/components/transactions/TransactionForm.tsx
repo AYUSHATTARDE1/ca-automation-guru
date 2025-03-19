@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/dialog";
 
 const transactionSchema = z.object({
-  amount: z.string().transform((val) => parseFloat(val)),
+  amount: z.string().min(1, { message: "Amount is required" }).transform((val) => parseFloat(val)),
   description: z.string().min(3, { message: "Description must be at least 3 characters" }),
   category: z.string().min(1, { message: "Category is required" }),
   transaction_date: z.string().min(1, { message: "Date is required" }),

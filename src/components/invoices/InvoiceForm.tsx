@@ -41,7 +41,7 @@ import {
 const invoiceSchema = z.object({
   client_name: z.string().min(3, { message: "Client name must be at least 3 characters" }),
   invoice_number: z.string().min(1, { message: "Invoice number is required" }),
-  amount: z.string().transform((val) => parseFloat(val)),
+  amount: z.string().min(1, { message: "Amount is required" }).transform((val) => parseFloat(val)),
   status: z.string().default("pending"),
   due_date: z.string().min(1, { message: "Due date is required" }),
 });
