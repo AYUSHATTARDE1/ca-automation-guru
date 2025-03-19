@@ -41,7 +41,7 @@ import {
 const invoiceSchema = z.object({
   client_name: z.string().min(3, { message: "Client name must be at least 3 characters" }),
   invoice_number: z.string().min(1, { message: "Invoice number is required" }),
-  amount: z.string().min(1, { message: "Amount is required" }).transform((val) => parseFloat(val)),
+  amount: z.preprocess((val) => Number(val), z.number().min(1, { message: "Amount is required" })),
   status: z.string().default("pending"),
   due_date: z.string().min(1, { message: "Due date is required" }),
 });
@@ -68,7 +68,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
     defaultValues: {
       client_name: "",
       invoice_number: `INV-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`,
-      amount: "",
+      amount: 0,
       status: "pending",
       due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
     },
