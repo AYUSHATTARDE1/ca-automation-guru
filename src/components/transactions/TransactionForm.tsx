@@ -85,14 +85,23 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess }) => {
   const onSubmit = async (values: TransactionFormValues) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.from("transactions").insert([
-        {
-          amount: values.amount,
-          description: values.description,
-          category: values.category,
-          transaction_date: new Date(values.transaction_date),
-        },
-      ]);
+      // Get the user session
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user_id = sessionData?.session?.user?.id;
+      
+      if (!user_id) {
+        toast.error("You must be logged in to add a transaction");
+        setIsLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.from("transactions").insert({
+        amount: values.amount,
+        description: values.description,
+        category: values.category,
+        transaction_date: values.transaction_date,
+        user_id: user_id
+      });
 
       if (error) {
         toast.error(error.message);

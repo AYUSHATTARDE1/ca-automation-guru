@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -77,15 +76,23 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
   const onSubmit = async (values: InvoiceFormValues) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.from("invoices").insert([
-        {
-          client_name: values.client_name,
-          invoice_number: values.invoice_number,
-          amount: values.amount,
-          status: values.status,
-          due_date: new Date(values.due_date),
-        },
-      ]);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user_id = sessionData?.session?.user?.id;
+      
+      if (!user_id) {
+        toast.error("You must be logged in to create an invoice");
+        setIsLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.from("invoices").insert({
+        client_name: values.client_name,
+        invoice_number: values.invoice_number,
+        amount: values.amount,
+        status: values.status,
+        due_date: values.due_date,
+        user_id: user_id
+      });
 
       if (error) {
         toast.error(error.message);
